@@ -10,7 +10,6 @@ Simple Payments API
 
     ./gradlew test
 
-
 ### Run application locally
 
     ./gradlew bootRun
