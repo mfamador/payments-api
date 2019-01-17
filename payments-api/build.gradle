@@ -1,5 +1,3 @@
-apply plugin: 'java'
-apply plugin: 'kotlin'
 apply plugin: "kotlin-spring"
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
@@ -10,6 +8,6 @@ dependencies {
 
     testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    
 }
-
-
