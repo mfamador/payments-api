@@ -9,3 +9,4 @@ gradlew.bat
 /*/out
 
 /.gradletasknamecache
+/payments-api/docker/data/

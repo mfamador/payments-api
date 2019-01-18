@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class Operation(@Id val id: String,
+data class Operation(@Id val id: String?,
                      val amount: Int = 0,
                      val description: String)
 
