@@ -16,11 +16,13 @@ import org.springframework.util.ResourceUtils
 import reactor.core.publisher.Mono
 import kotlin.test.assertEquals
 
-private const val BASE_URI = "/v1/payments"
+
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
+
+    private val BASE_URI = "/v1/payments"
 
     @Autowired
     lateinit var service: PaymentsService
@@ -47,7 +49,7 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
         val objects =
             mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), PaymentList::class.java)
 
-        assertEquals(objects.data.size, 14)
+        assertEquals(14, objects.data.size)
     }
 
     @Test
