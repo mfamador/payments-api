@@ -21,68 +21,40 @@ import java.util.UUID
 class PaymentsHandler(val service: PaymentsService) {
     private val log = LoggerFactory.getLogger(PaymentsHandler::class.java)
 
-    fun getPayments(request: ServerRequest): Mono<ServerResponse> {
-        log.debug("get payments")
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+    fun getPayments(request: ServerRequest): Mono<ServerResponse> =
+        ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
             .body(fromPublisher(service.getAllPayments(), Payment::class.java))
-    }
 
-    fun count(request: ServerRequest): Mono<ServerResponse> {
-        log.debug("count")
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+    fun count(request: ServerRequest): Mono<ServerResponse> =
+        ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
             .body(fromPublisher(service.count(), Long::class.java))
-    }
 
-    fun getPayment(request: ServerRequest): Mono<ServerResponse> {
-        val id = request.pathVariable("id")
-        log.debug("get payment $id")
-        val payment = service.getPayment(id)
-        return payment
-            .flatMap {
-                ok().contentType(APPLICATION_JSON)
-                    .body(fromPublisher(payment, Payment::class.java))
-            }
+    fun getPayment(request: ServerRequest): Mono<ServerResponse> =
+        service.getPayment(getId(request))
+            .flatMap { ok().contentType(APPLICATION_JSON).syncBody(it) }
             .switchIfEmpty(notFound().build());
-    }
 
-    fun addPayment(request: ServerRequest): Mono<ServerResponse> {
-        val payment = request.bodyToMono(Payment::class.java)
-        val id = UUID.randomUUID().toString()
-        log.debug("add payment $id $payment")
-        return created(UriComponentsBuilder.fromPath("payments/").build().toUri())
+    fun addPayment(request: ServerRequest): Mono<ServerResponse> =
+        created(UriComponentsBuilder.fromPath("payments/").build().toUri())
             .contentType(APPLICATION_JSON)
-            .body(
-                fromPublisher(
-                    payment.map { p -> Payment(id, p) }
-                        .flatMap { p -> service.savePayment(p) }, Payment::class.java
-                )
-            )
-    }
+            .body(fromPublisher(request.bodyToMono(Payment::class.java)
+                .map { p -> Payment(UUID.randomUUID().toString(), p) }
+                .flatMap { p -> service.savePayment(p) }, Payment::class.java))
 
-    fun updatePayment(request: ServerRequest): Mono<ServerResponse> {
-        val id = request.pathVariable("id")
-        val payment = request.bodyToMono(Payment::class.java)
-        log.debug("update payment $id $payment")
-        return service.getPayment(id)
+    fun updatePayment(request: ServerRequest): Mono<ServerResponse> =
+        service.getPayment(getId(request))
             .flatMap {
                 ok().contentType(APPLICATION_JSON)
-                    .body(fromPublisher(payment.flatMap { p -> service.savePayment(p) }, Payment::class.java))
-            }
+                    .body(fromPublisher(request.bodyToMono(Payment::class.java)
+                        .flatMap { p -> service.savePayment(p) }, Payment::class.java)) }
             .switchIfEmpty(notFound().build())
-    }
 
-    fun deletePayment(request: ServerRequest): Mono<ServerResponse> {
-        val id = request.pathVariable("id")
-        log.debug("delete payment $id")
-        return service.getPayment(id)
+    fun deletePayment(request: ServerRequest): Mono<ServerResponse> =
+        service.getPayment(getId(request))
             .flatMap { p -> noContent().build(service.deletePayment(p)) }
             .switchIfEmpty(notFound().build())
-    }
 
-    fun deletePayments(request: ServerRequest): Mono<ServerResponse> {
-        log.debug("deletes payments")
-        return noContent().build(service.deletePayments())
-    }
+    fun deletePayments(request: ServerRequest): Mono<ServerResponse> = noContent().build(service.deletePayments())
 
-    // TODO - add swagger documentation
+    private fun getId(request: ServerRequest) = request.pathVariable("id")
 }

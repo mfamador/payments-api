@@ -8,7 +8,7 @@ data class Payment(
     @Id val id: String?,
     val version: Int,
     @JsonProperty("organisation_id") val organizationId: UUID,
-    val attributes: Attributes) : Operation {
+    val attributes: Attributes) : Resource {
 
     constructor(id: String, p: Payment) : this(id, p.version, p.organizationId, p.attributes)
 

@@ -11,16 +11,10 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 class ApplicationConfiguration : AbstractReactiveMongoConfiguration() {
 
     @Bean
-    fun mongoEventListener(): LoggingEventListener {
-        return LoggingEventListener()
-    }
+    fun mongoEventListener(): LoggingEventListener = LoggingEventListener()
 
     @Bean
-    override fun reactiveMongoClient(): MongoClient {
-        return MongoClients.create()
-    }
+    override fun reactiveMongoClient(): MongoClient = MongoClients.create()
 
-    override fun getDatabaseName(): String {
-        return "payments"
-    }
+    override fun getDatabaseName(): String = "payments"
 }

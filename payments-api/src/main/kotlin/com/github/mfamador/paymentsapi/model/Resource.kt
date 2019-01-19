@@ -5,4 +5,4 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes(JsonSubTypes.Type(Payment::class))
-interface Operation
+interface Resource
