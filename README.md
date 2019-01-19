@@ -2,7 +2,7 @@
 
 Simple Payments API with Webflux reactive endpoints and reactive MongoDB repository
 
-##Getting started
+## Getting started
 
 ### Build
 
@@ -46,24 +46,22 @@ Simple Payments API with Webflux reactive endpoints and reactive MongoDB reposit
         ```
         curl -XPOST localhost:8080/v1/payments/ -H 'Content-Type: application/json' -d '{paymentResource}'
         ```
-        ```
     
     - update a payment resource
 
         ```
         curl -XPOST localhost:8080/v1/payments/{id} -H 'Content-Type: application/json' -d '{paymentResource}'
         ```
-         ```
      
      - delete a specific payment resource
  
-         ```
-         curl -XDELETE localhost:8080/v1/payments/{id}
-         ```
+        ```
+        curl -XDELETE localhost:8080/v1/payments/{id}
+        ```
       
      - delete all payment resources (careful!)
  
-         ```
-         curl -XDELETE localhost:8080/v1/payments/
-         ```
+        ```
+        curl -XDELETE localhost:8080/v1/payments/
+        ```
    
