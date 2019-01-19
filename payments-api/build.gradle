@@ -22,7 +22,7 @@ dependencies {
 
 apply plugin: 'docker-compose'
 dockerCompose {
-    useComposeFiles = ["${project.projectDir}/docker/docker-compose.yml"]
+    useComposeFiles = ["${rootProject.projectDir}/docker/docker-compose.yml"]
     captureContainersOutput = true
     stopContainers = true
     removeContainers = true
