@@ -1,11 +1,11 @@
 package com.github.mfamador.paymentsapi.service
 
-import com.github.mfamador.paymentsapi.model.Operation
+import com.github.mfamador.paymentsapi.model.Payment
 import com.github.mfamador.paymentsapi.repository.PaymentsRepository
+import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
-import java.util.*
 
 @Service
 class PaymentsService {
@@ -13,7 +13,11 @@ class PaymentsService {
     @Autowired
     lateinit var paymentRepository: PaymentsRepository
 
-    fun addOperation(operation: Operation): Mono<Operation> = paymentRepository.save(operation)
+    fun getPayment(id: String): Mono<Payment> = paymentRepository.findById(id)
 
-    fun getPayments() = "Get list payments!"
+    fun getAllPayments(): Publisher<Payment> = paymentRepository.findAll()
+
+    fun savePayment(payment: Payment?): Mono<Payment>? = paymentRepository.save(payment)
+
+    fun deletePayment(payment: Payment?): Mono<Void>  = paymentRepository.delete(payment)
 }

@@ -10,8 +10,7 @@ class PaymentsRouter(private val handler: PaymentsHandler) {
 
     @Bean
     fun route() = router {
-        accept(APPLICATION_JSON).nest {
-            "/payments".nest {
+        accept(APPLICATION_JSON).nest { "/v1/payments".nest {
                 GET("/", handler::getPayments)
                 POST("/", handler::addPayment)
                 PUT("/{id}", handler::updatePayment)

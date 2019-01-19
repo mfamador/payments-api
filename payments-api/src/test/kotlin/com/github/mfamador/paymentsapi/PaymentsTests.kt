@@ -1,6 +1,8 @@
 package com.github.mfamador.paymentsapi
 
-import com.github.mfamador.paymentsapi.model.Operation
+import com.github.mfamador.paymentsapi.model.Attributes
+import com.github.mfamador.paymentsapi.model.Party
+import com.github.mfamador.paymentsapi.model.Payment
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Value
@@ -31,12 +33,12 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
 
     @Test
     fun testPostOperation() {
-        val request = Operation(UUID.randomUUID().toString(), 155, "operation #1")
+        val request = Payment(UUID.randomUUID(), 1, UUID.randomUUID(), Attributes(232.3, Party("test_party")), "test payment #1")
 
         testClient.post().uri("/payments")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .accept(MediaType.APPLICATION_JSON_UTF8)
-            .body(Mono.just(request), Operation::class.java)
+            .body(Mono.just(request), Payment::class.java)
             .exchange()
             .expectStatus().isOk
     }
