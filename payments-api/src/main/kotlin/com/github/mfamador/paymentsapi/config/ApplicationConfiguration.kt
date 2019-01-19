@@ -1,4 +1,4 @@
-package com.github.mfamador.paymentsapi.wiring
+package com.github.mfamador.paymentsapi.config
 
 import com.mongodb.reactivestreams.client.MongoClient
 import com.mongodb.reactivestreams.client.MongoClients

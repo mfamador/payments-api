@@ -10,3 +10,4 @@ gradlew.bat
 
 /.gradletasknamecache
 /docker/data/
+*.iml

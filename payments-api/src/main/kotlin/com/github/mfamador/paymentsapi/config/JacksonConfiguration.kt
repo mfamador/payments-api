@@ -1,4 +1,4 @@
-package com.github.mfamador.paymentsapi.wiring
+package com.github.mfamador.paymentsapi.config
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import org.springframework.context.annotation.Bean

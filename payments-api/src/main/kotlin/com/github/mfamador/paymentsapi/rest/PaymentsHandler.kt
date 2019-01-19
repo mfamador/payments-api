@@ -18,6 +18,8 @@ import java.util.*
 class PaymentsHandler(val service: PaymentsService) {
     private val log = LoggerFactory.getLogger(PaymentsHandler::class.java)
 
+    // TODO - add swagger documentation
+
     fun getPayments(request: ServerRequest): Mono<ServerResponse> {
         log.debug("get payments")
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
