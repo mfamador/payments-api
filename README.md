@@ -13,7 +13,7 @@ Simple Payments API with Webflux reactive endpoints and reactive MongoDB reposit
     # starts automatically a MongoDB instance
     ./gradlew test
 
-#### Run application locally 
+### Run application locally 
 
 #### Start MongoDB
     
