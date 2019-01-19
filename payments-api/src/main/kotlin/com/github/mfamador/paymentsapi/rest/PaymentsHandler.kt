@@ -61,7 +61,7 @@ class PaymentsHandler(val service: PaymentsService) {
         val payment = request.bodyToMono(Payment::class.java)
         log.debug("update payment $id $payment")
         return service.getPayment(id)
-            .flatMap { old ->
+            .flatMap {
                 ok().contentType(APPLICATION_JSON)
                     .body(fromPublisher(payment.flatMap { p -> service.savePayment(p) }, Payment::class.java))
             }
