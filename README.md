@@ -2,18 +2,18 @@
 
 Simple Payments API
 
-## How to build it locally
+## Build
 
     ./gradlew clean build
     
-### Run integration tests
+### Test
 
     ./gradlew test
 
-### Run application locally
+### Run
 
     ./gradlew bootRun
 
 ## Getting started
 
-    .
+    

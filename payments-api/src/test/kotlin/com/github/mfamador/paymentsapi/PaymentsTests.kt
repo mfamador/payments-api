@@ -1,11 +1,13 @@
 package com.github.mfamador.paymentsapi
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.mfamador.paymentsapi.model.Payment
 import com.github.mfamador.paymentsapi.model.PaymentList
 import com.github.mfamador.paymentsapi.service.PaymentsService
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -16,23 +18,32 @@ import org.springframework.util.ResourceUtils
 import reactor.core.publisher.Mono
 import kotlin.test.assertEquals
 
-
-
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
 
     private val BASE_URI = "/v1/payments"
+    private val log = LoggerFactory.getLogger(PaymentsTests::class.java)
 
     @Autowired
     lateinit var service: PaymentsService
 
-    val mapper = jacksonObjectMapper()
+    @Autowired
+    lateinit var mapper: ObjectMapper
 
     val testClient = WebTestClient
         .bindToServer()
         .baseUrl("http://localhost:$port")
         .build()
+
+    companion object {
+        private val log = LoggerFactory.getLogger(PaymentsTests::class.java)
+
+        @BeforeAll
+        fun beforeAll() {
+            log.info("beforeAll called")
+        }
+    }
 
     @Test
     fun `list all payments`() {
@@ -49,6 +60,7 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
         val objects =
             mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), PaymentList::class.java)
 
+        log.debug(objects.toString())
         assertEquals(14, objects.data.size)
     }
 
