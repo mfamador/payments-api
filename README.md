@@ -15,53 +15,53 @@ Simple Payments API with Webflux reactive endpoints and reactive MongoDB reposit
 
 #### Run application locally 
 
-- Start MongoDB
-
-    ```
-    docker-compose up
-    ```
+#### Start MongoDB
     
-- Run application
+```
+cd docker
+docker-compose up
+```
+        
+#### Run application
 
-    ```
-    ./gradlew bootRun
-    ````
+```
+./gradlew bootRun
+```
     
-- Payments API
+### Payments API
 
-    - get all payment resources
+- get all payment resources
 
-        ```
-        curl localhost:8080/v1/payments
-        ```
+```
+curl localhost:8080/v1/payments
+```
+
+- get a specific payment resource
+
+```
+curl localhost:8080/v1/payments/{id}
+```
     
-    - get a specific payment resource
+- add a payment resource
 
-        ```
-        curl localhost:8080/v1/payments/{id}
-        ```
+```
+curl -XPOST localhost:8080/v1/payments/ -H 'Content-Type: application/json' -d '{paymentResource}'
+```
     
-    - add a payment resource
+- update a payment resource
 
-        ```
-        curl -XPOST localhost:8080/v1/payments/ -H 'Content-Type: application/json' -d '{paymentResource}'
-        ```
-    
-    - update a payment resource
-
-        ```
-        curl -XPOST localhost:8080/v1/payments/{id} -H 'Content-Type: application/json' -d '{paymentResource}'
-        ```
+```
+curl -XPOST localhost:8080/v1/payments/{id} -H 'Content-Type: application/json' -d '{paymentResource}'
+```
      
-     - delete a specific payment resource
- 
-        ```
-        curl -XDELETE localhost:8080/v1/payments/{id}
-        ```
+- delete a specific payment resource
+
+```
+curl -XDELETE localhost:8080/v1/payments/{id}
+```
       
-     - delete all payment resources (careful!)
+- delete all payment resources (careful!)
  
-        ```
-        curl -XDELETE localhost:8080/v1/payments/
-        ```
-   
+```
+curl -XDELETE localhost:8080/v1/payments/
+```
