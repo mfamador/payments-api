@@ -1,5 +1,6 @@
 package com.github.mfamador.paymentsapi.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import org.springframework.data.annotation.Id
@@ -11,7 +12,7 @@ interface Operation
 
 data class Payment(@Id val id: String?,
                    val version: Int,
-                   val organizationId: UUID,
+                   @JsonProperty("organisation_id") val organizationId: UUID,
                    val attributes: Attributes,
                    val description: String) : Operation {
 
@@ -19,6 +20,6 @@ data class Payment(@Id val id: String?,
 }
 
 data class Attributes(val amount: Double,
-                      val beneficiaryParty: Party)
+                      @JsonProperty("beneficiary_party") val beneficiaryParty: Party)
 
-data class Party(val accountName: String)
+data class Party(@JsonProperty("account_name") val accountName: String)

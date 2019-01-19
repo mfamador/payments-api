@@ -1,9 +1,7 @@
 package com.github.mfamador.paymentsapi.rest
 
 import com.github.mfamador.paymentsapi.model.Payment
-import com.github.mfamador.paymentsapi.repository.PaymentsRepository
 import com.github.mfamador.paymentsapi.service.PaymentsService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.stereotype.Component
