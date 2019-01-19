@@ -18,8 +18,6 @@ import java.util.*
 class PaymentsHandler(val service: PaymentsService) {
     private val log = LoggerFactory.getLogger(PaymentsHandler::class.java)
 
-    // TODO - add swagger documentation
-
     fun getPayments(request: ServerRequest): Mono<ServerResponse> {
         log.debug("get payments")
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
@@ -37,7 +35,7 @@ class PaymentsHandler(val service: PaymentsService) {
         log.debug("get payment $id")
         val payment = service.getPayment(id)
         return payment
-            .flatMap { p ->
+            .flatMap {
                 ok().contentType(APPLICATION_JSON)
                     .body(fromPublisher(payment, Payment::class.java))
             }
@@ -82,4 +80,6 @@ class PaymentsHandler(val service: PaymentsService) {
         log.debug("deletes payments")
         return noContent().build(service.deletePayments())
     }
+
+    // TODO - add swagger documentation
 }

@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.mfamador.paymentsapi.model.Payment
 import com.github.mfamador.paymentsapi.model.PaymentList
 import com.github.mfamador.paymentsapi.service.PaymentsService
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +14,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.util.ResourceUtils
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import kotlin.test.assertEquals
 
@@ -36,22 +36,32 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
         .baseUrl("http://localhost:$port")
         .build()
 
+    @BeforeEach
+    internal fun beforeEach() {
+        log.info("beforeEach called")
+        service.deletePayments().block()
+    }
+
+    @AfterEach
+    internal fun afterEach() {
+        log.info("afterEach called")
+        service.deletePayments().block()
+    }
+
     companion object {
         private val log = LoggerFactory.getLogger(PaymentsTests::class.java)
 
         @BeforeAll
-        fun beforeAll() {
+        @JvmStatic
+        internal fun beforeAll() {
             log.info("beforeAll called")
         }
-    }
 
-    @Test
-    fun `list all payments`() {
-
-        testClient.get().uri(BASE_URI)
-            .accept(MediaType.APPLICATION_JSON_UTF8)
-            .exchange()
-            .expectStatus().isOk
+        @AfterAll
+        @JvmStatic
+        internal fun afterAll() {
+            log.info("afterAll called")
+        }
     }
 
     @Test
@@ -66,7 +76,7 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
 
     @Test
     fun `build payment object from json`() {
-        val json = "{\n" +
+        val jsonPayment = "{\n" +
                 "      \"type\": \"Payment\",\n" +
                 "      \"id\": \"4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43\",\n" +
                 "      \"version\": 0,\n" +
@@ -132,13 +142,36 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
                 "      }\n" +
                 "    }"
 
-        val payment = mapper.readValue(json, Payment::class.java)
+        val payment = mapper.readValue(jsonPayment, Payment::class.java)
         println("payment = ${payment}")
     }
 
+    @Test
+    fun `the payments in file are stored correctly through service`() {
+        assertEquals(0, service.count().block())
+
+        val objects =
+            mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), PaymentList::class.java)
+
+        objects.data.forEach {
+            val p = service.savePayment(it)!!.block()
+            log.debug("inserted ${it.id}")
+        }
+
+        assertEquals(service.count().block(), 14)
+    }
 
     @Test
-    fun `count all payments`() {
+    fun `list all payments through rest api`() {
+
+        testClient.get().uri(BASE_URI)
+            .accept(MediaType.APPLICATION_JSON_UTF8)
+            .exchange()
+            .expectStatus().isOk
+    }
+
+    @Test
+    fun `count all payments through rest api`() {
 
         testClient.get().uri(BASE_URI + "/count")
             .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -146,20 +179,11 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
             .expectStatus().isOk
     }
 
-
     @Test
-    fun `count all payments through service`() {
-
-        val count = service.count().block()
-        assert(count > 0)
-    }
-
-    @Test
-    fun `the payments in file are stored correctly`() {
+    fun `the payments in file are stored correctly through rest api`() {
         val objects =
             mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), PaymentList::class.java)
 
-        val initialCoud = service
         objects.data.forEach {
             testClient.post().uri(BASE_URI)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -168,7 +192,5 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
                 .exchange()
                 .expectStatus().isCreated
         }
-
     }
-
 }

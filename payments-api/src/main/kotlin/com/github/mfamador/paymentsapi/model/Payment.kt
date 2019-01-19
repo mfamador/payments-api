@@ -4,17 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.data.annotation.Id
 import java.util.*
 
-
 data class Payment(
     @Id val id: String?,
     val version: Int,
     @JsonProperty("organisation_id") val organizationId: UUID,
-    val attributes: Attributes
-) : Operation {
+    val attributes: Attributes) : Operation {
 
     constructor(id: String, p: Payment) : this(id, p.version, p.organizationId, p.attributes)
-
-    // TODO - figure out how to make PropertyNamingStrategy.SNAKE_CASE work and remove all @JsonProperty
 
     data class Attributes(
         val amount: Double,
@@ -65,4 +61,6 @@ data class Payment(
         val amount: Double,
         val currency: String
     )
+
+    // TODO - figure out how to make PropertyNamingStrategy.SNAKE_CASE work with Webflux and remove all @JsonProperty
 }
