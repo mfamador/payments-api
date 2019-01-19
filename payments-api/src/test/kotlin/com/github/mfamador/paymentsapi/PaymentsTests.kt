@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.mfamador.paymentsapi.model.Payment
 import com.github.mfamador.paymentsapi.model.PaymentList
 import com.github.mfamador.paymentsapi.service.PaymentsService
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,8 +18,9 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.util.ResourceUtils
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.UUID
+import kotlin.test.Ignore
 import kotlin.test.assertEquals
 
 @ExtendWith(SpringExtension::class)
@@ -39,13 +44,11 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
     @BeforeEach
     internal fun beforeEach() {
         log.info("beforeEach called")
-        service.deletePayments().block()
     }
 
     @AfterEach
     internal fun afterEach() {
         log.info("afterEach called")
-        service.deletePayments().block()
     }
 
     companion object {
@@ -67,8 +70,7 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
     @Test
     fun `read all payment objects from sample file`() {
 
-        val objects =
-            mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), PaymentList::class.java)
+        val objects = paymentList()
 
         log.debug(objects.toString())
         assertEquals(14, objects.data.size)
@@ -148,17 +150,25 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
 
     @Test
     fun `the payments in file are stored correctly through service`() {
-        assertEquals(0, service.count().block())
+        val count = service.count().block()
 
-        val objects =
-            mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), PaymentList::class.java)
+        val objects = paymentList()
 
         objects.data.forEach {
-            val p = service.savePayment(it)!!.block()
-            log.debug("inserted ${it.id}")
+            val p = service.savePayment(Payment(UUID.randomUUID().toString(), it))!!.block()
+            log.debug("inserted ${p.id}")
         }
 
-        assertEquals(service.count().block(), 14)
+        assertEquals(14, service.count().block() - count)
+    }
+
+    @Ignore
+    @Test
+    fun `delete all payments through service`() {
+
+        service.deletePayments().block()
+        val count = service.count().block()
+        assertEquals(0, count)
     }
 
     @Test
@@ -181,8 +191,7 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
 
     @Test
     fun `the payments in file are stored correctly through rest api`() {
-        val objects =
-            mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), PaymentList::class.java)
+        val objects = paymentList()
 
         objects.data.forEach {
             testClient.post().uri(BASE_URI)
@@ -193,4 +202,7 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
                 .expectStatus().isCreated
         }
     }
+
+    private fun paymentList() =
+        mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), PaymentList::class.java)
 }
