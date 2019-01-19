@@ -21,12 +21,19 @@ class PaymentsHandler(val service: PaymentsService) {
             .body(fromPublisher(service.getAllPayments(), Payment::class.java))
     }
 
+    fun count(request: ServerRequest): Mono<ServerResponse> {
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+            .body(fromPublisher(service.count(), Long::class.java))
+    }
+
     fun getPayment(request: ServerRequest): Mono<ServerResponse> {
         val id = request.pathVariable("id")
         val payment = service.getPayment(id)
         return payment
-            .flatMap { p -> ok().contentType(APPLICATION_JSON)
-                .body(fromPublisher(payment, Payment::class.java)) }
+            .flatMap { p ->
+                ok().contentType(APPLICATION_JSON)
+                    .body(fromPublisher(payment, Payment::class.java))
+            }
             .switchIfEmpty(notFound().build());
     }
 
@@ -38,8 +45,10 @@ class PaymentsHandler(val service: PaymentsService) {
             .contentType(APPLICATION_JSON)
             .body(
                 fromPublisher(
-                    payment.map {p -> Payment(id, p)}
-                        .flatMap { p -> service.savePayment(p) }, Payment::class.java))
+                    payment.map { p -> Payment(id, p) }
+                        .flatMap { p -> service.savePayment(p) }, Payment::class.java
+                )
+            )
     }
 
     fun updatePayment(request: ServerRequest): Mono<ServerResponse> {
@@ -51,7 +60,7 @@ class PaymentsHandler(val service: PaymentsService) {
                 ok().contentType(APPLICATION_JSON)
                     .body(fromPublisher(payment.flatMap { p -> service.savePayment(p) }, Payment::class.java))
             }
-            .switchIfEmpty(notFound().build());
+            .switchIfEmpty(notFound().build())
     }
 
     fun deletePayment(request: ServerRequest): Mono<ServerResponse> {
@@ -59,6 +68,10 @@ class PaymentsHandler(val service: PaymentsService) {
 
         return service.getPayment(id)
             .flatMap { p -> noContent().build(service.deletePayment(p)) }
-            .switchIfEmpty(notFound().build());
+            .switchIfEmpty(notFound().build())
+    }
+
+    fun deletePayments(request: ServerRequest): Mono<ServerResponse> {
+        return noContent().build(service.deletePayments())
     }
 }

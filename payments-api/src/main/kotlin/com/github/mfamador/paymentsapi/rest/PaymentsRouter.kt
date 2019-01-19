@@ -12,10 +12,12 @@ class PaymentsRouter(private val handler: PaymentsHandler) {
     fun route() = router {
         accept(APPLICATION_JSON).nest { "/v1/payments".nest {
                 GET("/", handler::getPayments)
+                GET("/count", handler::count)
                 POST("/", handler::addPayment)
                 PUT("/{id}", handler::updatePayment)
                 GET("/{id}", handler::getPayment)
                 DELETE("/{id}", handler::deletePayment)
+                DELETE("/", handler::deletePayments) // TODO - remove this route
             }
         }
     }
