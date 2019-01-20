@@ -2,16 +2,12 @@ package com.github.mfamador.paymentsapi.service
 
 import com.github.mfamador.paymentsapi.model.Payment
 import com.github.mfamador.paymentsapi.repository.PaymentsRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
-class PaymentsService {
-
-    @Autowired
-    lateinit var paymentRepository: PaymentsRepository
+class PaymentsService(private val paymentRepository: PaymentsRepository) {
 
     fun getPayment(id: String): Mono<Payment> = paymentRepository.findById(id)
 

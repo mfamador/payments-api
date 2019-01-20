@@ -6,6 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 @SpringBootApplication
 class PaymentsApiApplication
 
-fun main(args: Array<String>) {
-    SpringApplication.run(PaymentsApiApplication::class.java, *args)
+fun main() {
+    SpringApplication.run(PaymentsApiApplication::class.java)
 }

@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono
 import java.util.UUID
 
 @Component
+
 class PaymentsHandler(val service: PaymentsService) {
     private val log = LoggerFactory.getLogger(PaymentsHandler::class.java)
 
