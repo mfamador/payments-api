@@ -28,6 +28,7 @@ docker-compose up
 ./gradlew bootRun
 ```
     
+    
 ### Payments API
 
 - get all payment resources
