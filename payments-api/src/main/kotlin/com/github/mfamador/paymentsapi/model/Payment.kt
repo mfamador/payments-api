@@ -12,6 +12,8 @@ data class Payment(
 
     constructor(id: String, p: Payment) : this(id, p.version, p.organizationId, p.attributes)
 
+    constructor(id: String, version: Int, p: Payment) : this(id, version, p.organizationId, p.attributes)
+
     data class Attributes(
         val amount: Double,
         @JsonProperty("beneficiary_party") val beneficiaryParty: Party,

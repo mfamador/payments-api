@@ -15,9 +15,9 @@ class PaymentsService(private val paymentRepository: PaymentsRepository) {
 
     fun count(): Mono<Long> = paymentRepository.count()
 
-    fun savePayment(payment: Payment?): Mono<Payment>? = paymentRepository.save(payment!!)
+    fun savePayment(payment: Payment): Mono<Payment>? = paymentRepository.save(payment)
 
-    fun deletePayment(payment: Payment?): Mono<Void>  = paymentRepository.delete(payment!!)
+    fun deletePayment(payment: Payment): Mono<Void>  = paymentRepository.delete(payment)
 
     fun deletePayments(): Mono<Void>  = paymentRepository.deleteAll()
 }

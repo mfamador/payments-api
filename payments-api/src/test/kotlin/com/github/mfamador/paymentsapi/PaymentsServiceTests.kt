@@ -25,21 +25,9 @@ import kotlin.test.assertEquals
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
+class PaymentsServiceTests : BaseTest() {
 
-    private val BASE_URI = "/v1/payments"
-    private val log = LoggerFactory.getLogger(PaymentsTests::class.java)
-
-    @Autowired
-    lateinit var service: PaymentsService
-
-    @Autowired
-    lateinit var mapper: ObjectMapper
-
-    val testClient = WebTestClient
-        .bindToServer()
-        .baseUrl("http://localhost:$port")
-        .build()
+    private val log = LoggerFactory.getLogger(PaymentsServiceTests::class.java)
 
     @BeforeEach
     internal fun beforeEach() = log.info("beforeEach called")
@@ -48,7 +36,7 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
     internal fun afterEach() = log.info("afterEach called")
 
     companion object {
-        private val log = LoggerFactory.getLogger(PaymentsTests::class.java)
+        private val log = LoggerFactory.getLogger(PaymentsServiceTests::class.java)
 
         @BeforeAll
         @JvmStatic
@@ -146,6 +134,48 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
         assertEquals(14, service.count().block() - count)
     }
 
+    @Test
+    fun `the payments in file are updated correctly through service`() {
+        val count = service.count().block()
+
+        paymentList().data.forEach {
+            val p = service.savePayment(Payment(getId(), it))!!.block()
+        }
+
+        assertEquals(14, service.count().block() - count)
+
+        val payments = service.getAllPayments().collectList().block()
+        payments.forEach {
+            service.savePayment(Payment(it.id!!, 2, it))!!.block()
+        }
+
+        val updatedPayments = service.getAllPayments().collectList().block()
+        updatedPayments.forEach {
+            assertEquals(2, it.version)
+        }
+
+        assertEquals(14, service.count().block() - count)
+    }
+
+    @Test
+    fun `the payments in file are deleted correctly after created`() {
+        val count = service.count().block()
+
+        val list = mutableListOf<Payment>()
+        paymentList().data.forEach {
+            val p = service.savePayment(Payment(getId(), it))!!.block()
+            list.add(p)
+        }
+
+        assertEquals(14, service.count().block() - count)
+
+        list.forEach {
+            service.deletePayment(it).block()
+        }
+
+        assertEquals(0, service.count().block() - count)
+    }
+
     @Ignore
     @Test
     fun `delete all payments through service`() {
@@ -155,40 +185,6 @@ class PaymentsTests(@Value("\${local.server.port}") private val port: Int) {
         assertEquals(0, count)
     }
 
-    @Test
-    fun `list all payments through rest api`() {
-
-        testClient.get().uri(BASE_URI)
-            .accept(MediaType.APPLICATION_JSON_UTF8)
-            .exchange()
-            .expectStatus().isOk
-    }
-
-    @Test
-    fun `count all payments through rest api`() {
-
-        testClient.get().uri(BASE_URI + "/count")
-            .accept(MediaType.APPLICATION_JSON_UTF8)
-            .exchange()
-            .expectStatus().isOk
-    }
-
-    @Test
-    fun `the payments in file are stored correctly through rest api`() {
-        val objects = paymentList()
-
-        objects.data.forEach {
-            testClient.post().uri(BASE_URI)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-                .body(Mono.just(it), Payment::class.java)
-                .exchange()
-                .expectStatus().isCreated
-        }
-    }
-
     private fun getId() = UUID.randomUUID().toString()
 
-    private fun paymentList() =
-        mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), ResourceList::class.java)
 }
