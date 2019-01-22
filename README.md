@@ -53,7 +53,7 @@ curl -XPOST localhost:8080/v1/payments/ -H 'Content-Type: application/json' -d '
 - update a payment resource
 
 ```
-curl -XPOST localhost:8080/v1/payments/{id} -H 'Content-Type: application/json' -d '{paymentResource}'
+curl -XPUT localhost:8080/v1/payments/{id} -H 'Content-Type: application/json' -d '{paymentResource}'
 ```
      
 - delete a specific payment resource
