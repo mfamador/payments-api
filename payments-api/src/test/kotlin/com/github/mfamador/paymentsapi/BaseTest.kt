@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.mfamador.paymentsapi.model.ResourceList
 import com.github.mfamador.paymentsapi.service.PaymentsService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.util.ResourceUtils
 
-open class BaseTest {
+@SpringBootTest
+class BaseTest {
 
     @Autowired
     lateinit var service: PaymentsService
@@ -16,5 +18,4 @@ open class BaseTest {
 
     fun paymentList() =
         mapper.readValue(ResourceUtils.getFile("classpath:payment-list-example.json"), ResourceList::class.java)
-
 }

@@ -1,9 +1,6 @@
 package com.github.mfamador.paymentsapi
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.mfamador.paymentsapi.model.Payment
-import com.github.mfamador.paymentsapi.model.ResourceList
-import com.github.mfamador.paymentsapi.service.PaymentsService
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
@@ -11,14 +8,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.util.ResourceUtils
-import reactor.core.publisher.Mono
 import java.util.UUID
 import kotlin.test.Ignore
 import kotlin.test.assertEquals

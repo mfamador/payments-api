@@ -8,6 +8,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-webflux:$springBootVersion"
     implementation "org.springframework.boot:spring-boot-starter-data-mongodb-reactive:$springBootVersion"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion"
+    implementation "io.cucumber:cucumber-java8:$cucumberVersion"
+    implementation "io.cucumber:cucumber-junit:$cucumberVersion"
+    implementation "io.cucumber:cucumber-spring:$cucumberVersion"
 
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit5:$kotlinVersion"
 
