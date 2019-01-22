@@ -55,7 +55,8 @@ class PaymentsHandler(val service: PaymentsService) {
             .flatMap { p -> noContent().build(service.deletePayment(p)) }
             .switchIfEmpty(notFound().build())
 
-    fun deletePayments(request: ServerRequest): Mono<ServerResponse> = noContent().build(service.deletePayments())
+    fun deletePayments(request: ServerRequest): Mono<ServerResponse> =
+        noContent().build(service.deletePayments())
 
     private fun getId(request: ServerRequest) = request.pathVariable("id")
 }
