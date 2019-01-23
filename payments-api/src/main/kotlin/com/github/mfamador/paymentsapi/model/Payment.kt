@@ -7,12 +7,12 @@ import java.util.UUID
 data class Payment(
     @Id val id: String?,
     val version: Int,
-    @JsonProperty("organisation_id") val organizationId: UUID,
+    @JsonProperty("organisation_id") val organisationId: UUID,
     val attributes: Attributes) : Resource {
 
-    constructor(id: String, p: Payment) : this(id, p.version, p.organizationId, p.attributes)
+    constructor(id: String, p: Payment) : this(id, p.version, p.organisationId, p.attributes)
 
-    constructor(id: String, version: Int, p: Payment) : this(id, version, p.organizationId, p.attributes)
+    constructor(id: String, version: Int, p: Payment) : this(id, version, p.organisationId, p.attributes)
 
     data class Attributes(
         val amount: Double,
