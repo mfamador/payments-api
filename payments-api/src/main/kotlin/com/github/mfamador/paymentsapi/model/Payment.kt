@@ -18,7 +18,7 @@ data class Payment(
         val amount: Double,
         @JsonProperty("beneficiary_party") val beneficiaryParty: Party,
         @JsonProperty("charges_information") val chargesInformation: ChargeInformation,
-        val currency: String,
+        val currency: Currency,
         @JsonProperty("debtor_party") val debtorParty: Party,
         @JsonProperty("end_to_end_reference") val endToEndReference: String,
         val fx: Fx,
@@ -33,6 +33,12 @@ data class Payment(
         @JsonProperty("scheme_payment_type") val schemePaymentType: String,
         @JsonProperty("sponsor_party") val sponsorParty: Party
     )
+
+    enum class Currency {
+        USD,
+        EUR,
+        GBP
+    }
 
     data class Party(
         @JsonProperty("account_name") val accountName: String?,
@@ -61,7 +67,7 @@ data class Payment(
 
     data class Charge(
         val amount: Double,
-        val currency: String
+        val currency: Currency
     )
 
     // TODO - figure out how to make PropertyNamingStrategy.SNAKE_CASE work with Webflux and remove all @JsonProperty
