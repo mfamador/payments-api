@@ -6,8 +6,8 @@ build
 gradle/
 gradlew
 gradlew.bat
-/*/out
 
 /.gradletasknamecache
 /docker/data/
 *.iml
+payments-api/out/
