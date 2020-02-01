@@ -22,11 +22,11 @@ class PaymentsHandler(val service: PaymentsService) {
     private val log = LoggerFactory.getLogger(PaymentsHandler::class.java)
 
     fun getPayments(request: ServerRequest): Mono<ServerResponse> =
-        ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+        ok().contentType(APPLICATION_JSON)
             .body(fromPublisher(service.getAllPayments(), Payment::class.java))
 
     fun count(request: ServerRequest): Mono<ServerResponse> =
-        ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+        ok().contentType(APPLICATION_JSON)
             .body(fromPublisher(service.count(), Long::class.java))
 
     fun getPayment(request: ServerRequest): Mono<ServerResponse> =
